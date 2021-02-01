@@ -17,14 +17,16 @@ df['brand'] = df['brand'].apply(f)
 
 # 按品牌统计投诉总数
 result = df.groupby(['brand'])['id'].count().sort_values(ascending=False)
-print("***品牌投诉总数***")
+print("******品牌投诉总数******")
 print(result)
+
 # 按车型统计投诉总数
 result3 = df.groupby(['car_model'])['id'].count().sort_values(ascending=False)
-print("***车型投诉总数***")
+print("******车型投诉总数******")
 print(result3)
+
 # 统计品牌平均车型投诉数量
-Brand_ave_model = df.groupby(['brand', 'car_model'])['id'].agg('count').groupby('brand').mean().sort_values(
-    ascending=False)
-print("***品牌平均车型投诉数量***")
-print(Brand_ave_model)
+result4 = df.groupby('brand')['car_model'].value_counts().groupby('brand').\
+    mean().sort_values(ascending=False)
+print("******品牌平均车型投诉数量******")
+print(result4)
