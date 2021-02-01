@@ -2,7 +2,7 @@ import pandas as pd
 
 # 数据加载
 df = pd.read_csv('car_complain.csv')
-# print(df)
+
 # 抱怨点拆分
 df = df.drop('problem', axis=1).join(df.problem.str.get_dummies(','))
 
@@ -16,21 +16,15 @@ def f(x):
 df['brand'] = df['brand'].apply(f)
 
 # 按品牌统计投诉总数
-result = df.groupby(['brand'])['id'].agg(['count'])
-# print(result)
-
-# 统计同一品牌同一投诉类型的个数
-tags = df.columns[7:]
-print(tags)
-result2 = df.groupby(['brand'])[tags].agg(['sum'])
-
-result2 = result.merge(result2, left_index=True, right_index=True, how='left')
-result2.reset_index(inplace=True)
-result2.to_excel("result2.xlsx", index=False)
-# 按照投诉总数Count从大到小排序
-result2 = result2.sort_values('count', ascending=False)
-print(result2)
-# 查看特定抱怨点的排名
-query = ('A114', 'sum')
-result3 = result2.sort_values(query, ascending=False)
+result = df.groupby(['brand'])['id'].count().sort_values(ascending=False)
+print("***品牌投诉总数***")
+print(result)
+# 按车型统计投诉总数
+result3 = df.groupby(['car_model'])['id'].count().sort_values(ascending=False)
+print("***车型投诉总数***")
 print(result3)
+# 统计品牌平均车型投诉数量
+Brand_ave_model = df.groupby(['brand', 'car_model'])['id'].agg('count').groupby('brand').mean().sort_values(
+    ascending=False)
+print("***品牌平均车型投诉数量***")
+print(Brand_ave_model)
